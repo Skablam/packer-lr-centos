@@ -1,0 +1,96 @@
+{
+  "description": "Standardised CentOS 7.0 build for Virtualbox/Vagrant and VMWare",
+  "min_packer_version": "0.7.5",
+  "variables": {
+    "build": "lr-centos",
+    "version": "0.2.0",
+    "version description": "",
+    "vagrant box": "{{ env `VAGRANT_BOX` }}",
+    "vagrant key": "{{ env `VAGRANT_KEY` }}",
+    "vagrant no-release": true,
+    "iso name": "CentOS-7-x86_64-Everything-1503-01.iso",
+    "iso sha256": "8c3f66efb4f9a42456893c658676dc78fe12b3a7eabca4f187de4855d4305cc7",
+    "kickstart": "centos7.cfg",
+    "disk size": 40000,
+    "memory": 1024,
+    "headless": true,
+    "clean disks": true,
+    "puppet version": "latest"
+  },
+  "builders": [
+  {
+    "name": "virtualbox",
+    "type": "virtualbox-iso",
+    "vm_name": "{{ user `build` }}-{{ timestamp }}",
+    "output_directory": "exports/virtualbox/{{ user `build` }}-{{ user `version` }}-{{ timestamp }}",
+    "http_directory": "kickstarts",
+    "iso_urls": [
+      "isos/{{ user `iso name` }}",
+      "http://www.mirrorservice.org/sites/mirror.centos.org/7/isos/x86_64/{{ user `iso name` }}",
+      "http://mirror.mhd.uk.as44574.net/mirror.centos.org/7/isos/x86_64/{{ user `iso name` }}",
+      "http://mirror.ox.ac.uk/sites/mirror.centos.org/7/isos/x86_64/{{ user `iso name` }}",
+      "http://mirrors.ukfast.co.uk/sites/ftp.centos.org/7/isos/x86_64/{{ user `iso name` }}"
+    ],
+    "iso_checksum": "{{ user `iso sha256` }}",
+    "iso_checksum_type": "sha256",
+    "ssh_wait_timeout": "30m",
+    "ssh_username": "root",
+    "ssh_password": "root",
+    "shutdown_command": "shutdown -P now",
+    "headless": "{{ user `headless` }}",
+    "boot_wait": "3s",
+    "boot_command": [
+      "<tab>",
+      " cmdline",
+      " inst.ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{ user `kickstart` }}",
+      "<enter>"
+    ],
+    "disk_size": "{{ user `disk size` }}",
+    "format": "ovf",
+    "guest_os_type": "RedHat_64",
+    "guest_additions_path": "/root/vmutils.iso",
+    "guest_additions_path": "file:///usr/share/virtualbox/VBoxGuestAdditions.iso",
+    "virtualbox_version_file": "/etc/vbox_version",
+    "vboxmanage": [
+      [
+        "modifyvm",
+        "{{.Name}}",
+        "--memory",
+        "{{ user `memory` }}"
+      ]
+    ]
+  }
+],
+"provisioners": [
+  {
+    "type": "shell",
+    "scripts": [
+      "scripts/vagrant.sh"
+    ]
+  },
+  {
+    "type": "shell",
+    "environment_vars": [
+      "CLEAN_DISKS={{ user `clean disks` }}"
+    ],
+    "scripts": [
+      "scripts/vmutils.sh",
+      "scripts/puppet.sh",
+      "scripts/cleanup.sh"
+    ]
+  }
+],
+"post-processors": [
+  [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "exports/vagrant/{{ user `build` }}-{{ user `version` }}-{{ timestamp }}.box",
+      "compression_level": "9",
+      "only": [
+        "virtualbox"
+      ]
+    }
+  ]
+ ]
+}
