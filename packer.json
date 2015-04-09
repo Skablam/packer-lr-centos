@@ -49,7 +49,7 @@
     "format": "ovf",
     "guest_os_type": "RedHat_64",
     "guest_additions_path": "/root/vmutils.iso",
-    "guest_additions_path": "file:///usr/share/virtualbox/VBoxGuestAdditions.iso",
+    "guest_additions_url": "file:///usr/share/virtualbox/VBoxGuestAdditions.iso",
     "virtualbox_version_file": "/etc/vbox_version",
     "vboxmanage": [
       [
