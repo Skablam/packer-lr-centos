@@ -15,7 +15,7 @@ case $PACKER_BUILDER_TYPE in
   echo "Run Guest Additions installer"
   /mnt/VBoxLinuxAdditions.run
   echo "Remove unneccessary packages"
-  yum remove -y kernel-headers.x86_64
+  yum remove -y gcc dkms patch kernel-devel kernel-headers 2>&1 > /dev/null
   ;;
 
   amazon-ebs)
