@@ -16,17 +16,16 @@ case $PACKER_BUILDER_TYPE in
   /mnt/VBoxLinuxAdditions.run
   echo "Remove unneccessary packages"
   yum remove -y gcc dkms patch kernel-devel kernel-headers 2>&1 > /dev/null
+  # Cleaning up
+  umount /mnt
+  rm -f ${VM_ISO}
   ;;
 
   amazon-ebs)
   echo "Updating system for AWS"
   yum update -y
   echo "Switching to GB encoding"
-  echo 'LANG="en_GB"' > /etc/default/locale
-  echo 'LANGUAGE="en_GB:"' >> /etc/default/locale
-  echo "en_GB ISO-8859-1" > /var/lib/locales/supported.d/local
-  echo 'LC_ALL="en_GB.utf8"' >> /etc/environment
-  locale-gen
+  localectl set-locale LANG=en_GB.utf8
   ;;
 
   *)
@@ -34,10 +33,6 @@ case $PACKER_BUILDER_TYPE in
   ;;
 
 esac
-
-# Cleaning up
-umount /mnt
-rm -f ${VM_ISO}
 
 echo "VM utilities installed"
 exit 0

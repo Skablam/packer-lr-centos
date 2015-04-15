@@ -2,8 +2,11 @@
 # DESCRIPTION:
 #   Used to clean up an environment ready for exporting from packer.
 #
-# USAGE: 
+# USAGE:
 #   Set $CLEAN_DISKS to 0 to skip disk cleaning.
+
+# Ensure script is run as root
+[ $(id -u) != 0 ] && sudo -i
 
 # Clean package repository databases
 yum clean all
@@ -37,13 +40,23 @@ if [ "$CLEAN_DISKS" -ne 0 ]; then
   dd if=/dev/zero of=/boot/whitespace bs=1024 count=$count > /dev/null 2>&1;
   rm /boot/whitespace;
 
-  # Whiteout swap
-  echo "Clean up swap partitions"
-  swappart=`cat /proc/swaps | tail -n1 | awk -F ' ' '{print $1}'`
-  swapoff $swappart;
-  dd if=/dev/zero of=$swappart bs=1M > /dev/null 2>&1;
-  mkswap $swappart > /dev/null 2>&1;
-  swapon $swappart;
+  # Whiteout swap (unlless amzon-ebs)
+  case $PACKER_BUILDER_TYPE in
+
+    amazon-ebs)
+    echo "Swap clean up not required for for AWS"
+    ;;
+
+    *)
+    echo "Clean up swap partitions"
+    swappart=`cat /proc/swaps | tail -n1 | awk -F ' ' '{print $1}'`
+    swapoff $swappart;
+    dd if=/dev/zero of=$swappart bs=1M > /dev/null 2>&1;
+    mkswap $swappart > /dev/null 2>&1;
+    swapon $swappart;
+    ;;
+
+  esac
 fi
 
 # Do not quit until the file-system buffer has been flushed

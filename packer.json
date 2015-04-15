@@ -1,5 +1,5 @@
 {
-  "description": "Standardised CentOS 7.0 build for Virtualbox/Vagrant and VMWare",
+  "description": "Standardised CentOS 7.0 build for AWS, Virtualbox/Vagrant and VMWare",
   "min_packer_version": "0.7.5",
   "variables": {
     "build": "lr-centos",
@@ -15,7 +15,9 @@
     "memory": 1024,
     "headless": true,
     "clean disks": true,
-    "puppet version": "latest"
+    "puppet version": "latest",
+    "source ami": "ami-0f2c4d78",
+    "password": "centos"
   },
   "builders": [
     {
@@ -92,21 +94,41 @@
       "guest_os_type": "RedHat_64",
       "tools_upload_flavor": "linux",
       "tools_upload_path": "/root/vmutils.iso"
+    },
+    {
+      "type": "amazon-ebs",
+      "ami_name": "{{ user `build` }}-{{ timestamp }}",
+      "ami_description": "{{ `description` }} (version {{ user `build` }})",
+      "instance_type": "t2.small",
+      "region": "eu-west-1",
+      "source_ami": "{{ user `source ami` }}",
+      "ssh_username": "centos"
     }
   ],
   "provisioners": [
     {
       "type": "shell",
-      "scripts": [
-        "scripts/vagrant.sh"
-      ]
-    },
-    {
-      "type": "shell",
+      "only": ["amazon-ebs"],
       "environment_vars": [
         "CLEAN_DISKS={{ user `clean disks` }}"
       ],
       "scripts": [
+        "scripts/aws-set-pwd.sh",
+        "scripts/vmutils.sh",
+        "scripts/puppet.sh",
+        "scripts/cleanup.sh",
+        "scripts/aws-unset-pwd.sh"
+      ],
+      "execute_command": "echo '{{ user `password` }}' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    },
+    {
+      "type": "shell",
+      "except": ["amazon-ebs"],
+      "environment_vars": [
+        "CLEAN_DISKS={{ user `clean disks` }}"
+      ],
+      "scripts": [
+        "scripts/vagrant.sh",
         "scripts/vmutils.sh",
         "scripts/puppet.sh",
         "scripts/cleanup.sh"
