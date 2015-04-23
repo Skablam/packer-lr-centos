@@ -28,26 +28,33 @@ rm -rf /tmp/*
 echo "Clean logs"
 find /var/log -type f | while read f; do echo -ne '' > $f; done;
 
+# Purge ssh keys
+echo "Purging SSH keys"
+rm -f /etc/ssh/ssh_host_*
+
+
 if [ "$CLEAN_DISKS" -ne 0 ]; then
-  # Write zeros to disk to improve compression
-  echo "Clean disks"
-  dd if=/dev/zero of=/EMPTY bs=1M > /dev/null 2>&1;
-  rm -f /EMPTY;
 
-  # Whiteout /boot
-  echo "Clean up /boot"
-  count=`df --sync -kP /boot | tail -n1 | awk -F ' ' '{print $4}'`;
-  dd if=/dev/zero of=/boot/whitespace bs=1024 count=$count > /dev/null 2>&1;
-  rm /boot/whitespace;
-
-  # Whiteout swap (unlless amzon-ebs)
   case $PACKER_BUILDER_TYPE in
 
     amazon-ebs)
-    echo "Swap clean up not required for for AWS"
+    echo "Disk clean up not required for for AWS"
     ;;
 
+
     *)
+    # Write zeros to disk to improve compression
+    echo "Clean disks"
+    dd if=/dev/zero of=/EMPTY bs=1M > /dev/null 2>&1;
+    rm -f /EMPTY;
+
+    # Whiteout /boot
+    echo "Clean up /boot"
+    count=`df --sync -kP /boot | tail -n1 | awk -F ' ' '{print $4}'`;
+    dd if=/dev/zero of=/boot/whitespace bs=1024 count=$count > /dev/null 2>&1;
+    rm /boot/whitespace;
+
+    # Whiteout swap
     echo "Clean up swap partitions"
     swappart=`cat /proc/swaps | tail -n1 | awk -F ' ' '{print $1}'`
     swapoff $swappart;
