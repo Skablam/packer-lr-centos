@@ -42,6 +42,9 @@ case $PACKER_BUILDER_TYPE in
   Defaults:vagrant env_keep="SSH_AUTH_SOCK"
 EOF
   chmod 0440 /etc/sudoers.d/vagrant
+
+  # Set up epel repository
+  yum install -y epel-release
   ;;
 
   *)
