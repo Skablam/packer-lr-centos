@@ -26,6 +26,8 @@ case $PACKER_BUILDER_TYPE in
   yum update -y
   echo "Switching to GB encoding"
   localectl set-locale LANG=en_GB.utf8
+  echo "Installing wget"
+  yum install -y wget
   ;;
 
   *)

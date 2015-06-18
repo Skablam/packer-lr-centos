@@ -24,7 +24,7 @@
       "name": "virtualbox",
       "type": "virtualbox-iso",
       "vm_name": "{{ user `build` }}-{{ timestamp }}",
-      "output_directory": "exports/virtualbox/{{ user `build` }}-{{ user `version` }}-{{ timestamp }}",
+      "output_directory": "exports/virtualbox/{{ user `build` }}-{{ user `version` }}",
       "http_directory": "kickstarts",
       "iso_urls": [
         "isos/{{ user `iso name` }}",
@@ -67,7 +67,7 @@
       "type": "vmware-iso",
       "vm_name": "{{ user `build` }}-{{ timestamp }}",
       "vmdk_name": "{{ user `build` }}-{{ timestamp }}",
-      "output_directory": "exports/virtualbox/{{ user `build` }}-{{ user `version` }}-{{ timestamp }}",
+      "output_directory": "exports/virtualbox/{{ user `build` }}-{{ user `version` }}",
       "http_directory": "kickstarts",
       "iso_urls": [
         "isos/{{ user `iso name` }}",
@@ -97,7 +97,7 @@
     },
     {
       "type": "amazon-ebs",
-      "ami_name": "{{ user `build` }}-{{ timestamp }}",
+      "ami_name": "{{ user `build` }}-{{ user `version` }}",
       "ami_description": "{{ `description` }} (version {{ user `build` }})",
       "instance_type": "t2.small",
       "region": "eu-west-1",
