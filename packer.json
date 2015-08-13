@@ -3,7 +3,7 @@
   "min_packer_version": "0.7.5",
   "variables": {
     "build": "lr-centos",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "version description": "",
     "vagrant box": "{{ env `VAGRANT_BOX` }}",
     "vagrant key": "{{ env `VAGRANT_KEY` }}",
@@ -114,6 +114,7 @@
       ],
       "scripts": [
         "scripts/aws-set-pwd.sh",
+        "scripts/packages.sh",
         "scripts/vmutils.sh",
         "scripts/puppet.sh",
         "scripts/cleanup.sh",
@@ -128,6 +129,7 @@
         "CLEAN_DISKS={{ user `clean disks` }}"
       ],
       "scripts": [
+        "scripts/packages.sh",
         "scripts/vagrant.sh",
         "scripts/vmutils.sh",
         "scripts/puppet.sh",
