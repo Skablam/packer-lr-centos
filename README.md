@@ -2,7 +2,7 @@
 
 Basic packer configuration to create default images for Vagrant AWS and VMWare
 
-NB VMWare support has yet to be tested - owing to way in which vmware provide their software I have been unable to obtain a version of the player that is compatible with the version of the api that I have access to. Subsequently I am currently having to manually build vmware images from the provisioning scripts :(
+NB VMWare support has yet to be tested - owing to the way in which vmware provide their software I have been unable to obtain a version of the player that is compatible with the version of the api that I have access to. Subsequently I am currently having to manually build vmware images from the provisioning scripts :(
 
 Usage: 
 
@@ -10,7 +10,7 @@ NB The packer binary is just called 'packer' when downloaded however several lin
 
 Validate the template - this checks the syntax and configuration of the template
 
-```$ packer validate packer.json```
+```$ packer.io validate packer.json```
 
 Build the template - builds images for aws and vagrant (not vmware - see above)
 
