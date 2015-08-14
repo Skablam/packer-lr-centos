@@ -17,3 +17,7 @@ Build the template - builds images for aws and vagrant (not vmware - see above)
 ```$ packer.io build --except=vmware packer.json```
 
 NB in order for packer to build aws images (amis) it requires an aws credentials file and a seed ami to be present. See https://www.packer.io/docs for details
+
+NB the version of Guest Additions running on the build machine must match the version bieng installed into the packer image, otherwise you'll get a checksum error and the build will fail.
+
+NB images failing a checksum error seem to get deleted automatically by packer, presumably as some sort of protection feature.
