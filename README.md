@@ -21,6 +21,6 @@ Notes:
 
   2. The version of Guest Additions running on the build machine must match the version bieng installed into the packer        image, otherwise you'll get a checksum error and the build will fail.
 
-  3. Any images failing a checksum error seem to get deleted automatically by packer, Store a copies of the isos elsewhere     before the build to avoid the need to download them again.
+  3. Any iso images failing a checksum error (OS or Gurst Additions) get deleted automatically by packer, Store copies of      the isos elsewhere before the build to avoid the need to download them again.
 
-  4.  Landregistry/Centos v0.3.0 and above requires v 1.7.4 of packer to build, a packer bug means that the biosdevname        package is required when it shouldn't be when reverting to old style interface names e.g. eth0.
+  4. Landregistry/Centos v0.3.0 and above requires v 1.7.4 of packer to build, a packer bug means that the biosdevname         package is required when it shouldn't be when reverting to old style interface names e.g. eth0.
