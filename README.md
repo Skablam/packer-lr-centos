@@ -16,8 +16,11 @@ Build the template - builds images for aws and vagrant (not vmware - see above)
 
 ```$ packer.io build --except=vmware packer.json```
 
-NB in order for packer to build aws images (amis) it requires an aws credentials file and a seed ami to be present. See https://www.packer.io/docs for details
+Notes:
+  1. In order for packer to build aws images (amis) it requires an aws credentials file and a seed ami to be present. See      https://www.packer.io/docs for details.
 
-NB the version of Guest Additions running on the build machine must match the version bieng installed into the packer image, otherwise you'll get a checksum error and the build will fail.
+  2. The version of Guest Additions running on the build machine must match the version bieng installed into the packer        image, otherwise you'll get a checksum error and the build will fail.
 
-NB images failing a checksum error seem to get deleted automatically by packer, presumably as some sort of protection feature.
+  3. Any images failing a checksum error seem to get deleted automatically by packer, Store a copies of the isos elsewhere     before the build to avoid the need to download them again.
+
+  4.  Landregistry/Centos v0.3.0 and above requires v 1.7.4 of packer to build, a packer bug means that the biosdevname        package is required when it shouldn't be when reverting to old style interface names e.g. eth0.
